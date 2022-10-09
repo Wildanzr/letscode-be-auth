@@ -4,6 +4,22 @@ const mongoose = require('mongoose')
 // Cors
 const cors = require('cors')
 
+// Service
+const UserService = require('./services/UserService')
+
+// Utils
+
+// Controller
+const UserController = require('./controllers/UserController')
+
+// Routes
+const UserRoutes = require('./routes/userRoutes')
+
+// User Routes
+const userService = new UserService()
+const userController = new UserController(userService)
+const userRoutes = new UserRoutes(userController)
+
 // Init express
 require('dotenv').config()
 const express = require('express')
@@ -20,6 +36,9 @@ mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTo
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to database'))
+
+// Use routes
+app.use('/api/v1/users', userRoutes.routes)
 
 // Simple route
 app.get('/', (req, res) => {
