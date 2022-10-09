@@ -5,7 +5,7 @@ class UserRoutes {
     this.router = express.Router()
     this._userController = userController
 
-    this.router.post('/register', this._userController.createUser)
+    this.router.post('/register', this._userController.register)
   }
 }
 

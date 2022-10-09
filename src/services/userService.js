@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const ClientError = require('../errors/clientError')
 
 class UserService {
   constructor () {
@@ -6,6 +7,7 @@ class UserService {
     this.createUser = this.createUser.bind(this)
     this.updateUser = this.updateUser.bind(this)
     this.deleteUser = this.deleteUser.bind(this)
+    this.checkDuplicate = this.checkDuplicate.bind(this)
   }
 
   async getUser (username) {
@@ -22,6 +24,11 @@ class UserService {
 
   async deleteUser (username) {
     return await User.findOneAndDelete({ username })
+  }
+
+  async checkDuplicate (username, email) {
+    const user = await User.findOne({ $or: [{ username }, { email }] })
+    if (user) throw new ClientError('Username or email already exists.', 400)
   }
 }
 

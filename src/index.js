@@ -8,6 +8,10 @@ const cors = require('cors')
 const UserService = require('./services/UserService')
 
 // Utils
+const Response = require('./utils/response')
+const response = new Response()
+const HashPassword = require('./utils/hashPassword')
+const hashPassword = new HashPassword()
 
 // Controller
 const UserController = require('./controllers/UserController')
@@ -15,9 +19,13 @@ const UserController = require('./controllers/UserController')
 // Routes
 const UserRoutes = require('./routes/userRoutes')
 
+// Validator
+const Validator = require('./validators')
+const validator = new Validator()
+
 // User Routes
 const userService = new UserService()
-const userController = new UserController(userService)
+const userController = new UserController(userService, validator, response, hashPassword)
 const userRoutes = new UserRoutes(userController)
 
 // Auth Routes
