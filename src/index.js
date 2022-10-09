@@ -20,6 +20,8 @@ const userService = new UserService()
 const userController = new UserController(userService)
 const userRoutes = new UserRoutes(userController)
 
+// Auth Routes
+
 // Init express
 require('dotenv').config()
 const express = require('express')
@@ -32,18 +34,13 @@ app.use(express.json())
 app.use(cors())
 
 // Connect to mongodb
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-const db = mongoose.connection
-db.on('error', (error) => console.error(error))
-db.once('open', () => console.log('Connected to database'))
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewURLParser: true,
+  useUnifiedTopology: true
+}).then(console.log('connected to db')).catch((err) => console.log(err))
 
 // Use routes
-app.use('/api/v1/users', userRoutes.routes)
-
-// Simple route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the application.' })
-})
+app.use('/api/v1/users', userRoutes.router)
 
 // Set port, listen for requests
 const PORT = process.env.PORT || 5000
