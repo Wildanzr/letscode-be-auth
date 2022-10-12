@@ -4,8 +4,9 @@ const ClientError = require('../errors/clientError')
 class UserService {
   constructor () {
     this.getUserByUsername = this.getUserByUsername.bind(this)
-    this.getUserByUsername = this.getUserByUsername.bind(this)
+    this.getUserById = this.getUserById.bind(this)
     this.checkUsernameOrEmail = this.checkUsernameOrEmail.bind(this)
+    this.getUserAuth = this.getUserAuth.bind(this)
     this.createUser = this.createUser.bind(this)
     this.updateUser = this.updateUser.bind(this)
     this.deleteUser = this.deleteUser.bind(this)
@@ -18,6 +19,10 @@ class UserService {
 
   async getUserByEmail (email) {
     return await User.findOne({ email: email.toLowerCase() })
+  }
+
+  async getUserById (id) {
+    return await User.findOne({ _id: id })
   }
 
   async createUser (user) {
@@ -49,6 +54,12 @@ class UserService {
     if (user[0]) return user[0]
     else if (user[1]) return user[1]
     else return null
+  }
+
+  async getUserAuth (token) {
+    const { _id } = token
+    // To do : get another user data
+    return await this.getUserById(_id)
   }
 }
 

@@ -9,6 +9,7 @@ class AuthController {
     this._tokenize = tokenize
     this.register = this.register.bind(this)
     this.login = this.login.bind(this)
+    this.about = this.about.bind(this)
   }
 
   async register (req, res) {
@@ -66,6 +67,27 @@ class AuthController {
 
       // Return response
       const response = this._response.success(200, 'Login success.', { accessToken })
+
+      return res.status(response.statusCode).json(response)
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async about (req, res) {
+    const token = req.headers.authorization
+    try {
+      // Check token
+      if (!token) throw new ClientError('Invalid authorization.', 401)
+
+      // Verify token
+      const decode = await this._tokenize.verify(token)
+
+      // Get user details
+      const user = await this._userService.getUserAuth(decode)
+
+      // Return response
+      const response = this._response.success(200, 'Auth details success.', { user })
 
       return res.status(response.statusCode).json(response)
     } catch (error) {

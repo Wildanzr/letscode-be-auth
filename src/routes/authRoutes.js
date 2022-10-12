@@ -7,6 +7,7 @@ class AuthRoutes {
 
     this.router.post('/register', this._userController.register)
     this.router.post('/login', this._userController.login)
+    this.router.get('/me', this._userController.about)
   }
 }
 
