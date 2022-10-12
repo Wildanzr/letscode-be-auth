@@ -5,7 +5,8 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 // Service
-const UserService = require('./services/UserService')
+const UserService = require('./services/userService')
+const userService = new UserService()
 
 // Utils
 const Response = require('./utils/response')
@@ -17,20 +18,23 @@ const tokenize = new Tokenize()
 
 // Controller
 const AuthController = require('./controllers/authController')
+const UserController = require('./controllers/userController')
 
 // Routes
 const AuthRoutes = require('./routes/authRoutes')
+const UserRoutes = require('./routes/userRoutes')
 
 // Validator
 const Validator = require('./validators')
 const validator = new Validator()
 
-// User Routes
-const userService = new UserService()
+// Auth Routes
 const authController = new AuthController(userService, validator, response, hashPassword, tokenize)
 const authRoutes = new AuthRoutes(authController)
 
-// Auth Routes
+// User Routes
+const userController = new UserController(userService, validator, response, hashPassword, tokenize)
+const userRoutes = new UserRoutes(userController)
 
 // Init express
 require('dotenv').config()
@@ -51,6 +55,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 // Use routes
 app.use('/api/v1/auth', authRoutes.router)
+app.use('/api/v1/user', userRoutes.router)
 
 // Set port, listen for requests
 const PORT = process.env.PORT || 5000
