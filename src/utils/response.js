@@ -8,22 +8,25 @@ class Response {
   success (statusCode, message, data) {
     if (data) {
       return {
-        status: statusCode,
+        status: true,
         message,
+        statusCode,
         data
       }
     } else {
       return {
-        status: statusCode,
-        message
+        status: true,
+        message,
+        statusCode
       }
     }
   }
 
   fail (statusCode, message) {
     return {
-      status: statusCode,
-      message
+      status: false,
+      message,
+      statusCode
     }
   }
 

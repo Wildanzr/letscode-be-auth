@@ -10,6 +10,12 @@ const registerSchema = Joi.object({
   dateOfBirth: Joi.date().required()
 })
 
+const loginSchema = Joi.object({
+  username: Joi.string().min(3).max(30).required(),
+  password: Joi.string().min(8).max(30).required()
+})
+
 module.exports = {
-  registerSchema
+  registerSchema,
+  loginSchema
 }

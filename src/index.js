@@ -9,15 +9,17 @@ const UserService = require('./services/UserService')
 
 // Utils
 const Response = require('./utils/response')
-const response = new Response()
 const HashPassword = require('./utils/hashPassword')
+const Tokenize = require('./utils/tokenization')
+const response = new Response()
 const hashPassword = new HashPassword()
+const tokenize = new Tokenize()
 
 // Controller
 const UserController = require('./controllers/UserController')
 
 // Routes
-const UserRoutes = require('./routes/userRoutes')
+const AuthRoutes = require('./routes/authRoutes')
 
 // Validator
 const Validator = require('./validators')
@@ -25,8 +27,8 @@ const validator = new Validator()
 
 // User Routes
 const userService = new UserService()
-const userController = new UserController(userService, validator, response, hashPassword)
-const userRoutes = new UserRoutes(userController)
+const userController = new UserController(userService, validator, response, hashPassword, tokenize)
+const authRoutes = new AuthRoutes(userController)
 
 // Auth Routes
 
@@ -48,7 +50,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 }).then(console.log('connected to db')).catch((err) => console.log(err))
 
 // Use routes
-app.use('/api/v1/users', userRoutes.router)
+app.use('/api/v1/users', authRoutes.router)
 
 // Set port, listen for requests
 const PORT = process.env.PORT || 5000

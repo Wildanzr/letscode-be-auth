@@ -3,15 +3,21 @@ const ClientError = require('../errors/clientError')
 
 class UserService {
   constructor () {
-    this.getUser = this.getUser.bind(this)
+    this.getUserByUsername = this.getUserByUsername.bind(this)
+    this.getUserByUsername = this.getUserByUsername.bind(this)
+    this.checkUsernameOrEmail = this.checkUsernameOrEmail.bind(this)
     this.createUser = this.createUser.bind(this)
     this.updateUser = this.updateUser.bind(this)
     this.deleteUser = this.deleteUser.bind(this)
     this.checkDuplicate = this.checkDuplicate.bind(this)
   }
 
-  async getUser (username) {
-    return await User.findOne({ username })
+  async getUserByUsername (username) {
+    return await User.findOne({ username: username.toLowerCase() })
+  }
+
+  async getUserByEmail (email) {
+    return await User.findOne({ email: email.toLowerCase() })
   }
 
   async createUser (user) {
@@ -29,6 +35,20 @@ class UserService {
   async checkDuplicate (username, email) {
     const user = await User.findOne({ $or: [{ username }, { email }] })
     if (user) throw new ClientError('Username or email already exists.', 400)
+  }
+
+  async checkUsernameOrEmail (username) {
+    // Check user or email
+    const user = await Promise.all([
+      await this._userService.getUserByUsername(username),
+      await this._userService.getUserByEmail(username)
+    ])
+
+    console.log(user)
+
+    if (user[0]) return user[0]
+    else if (user[1]) return user[1]
+    else return null
   }
 }
 

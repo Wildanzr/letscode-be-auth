@@ -1,12 +1,13 @@
 const express = require('express')
 
-class UserRoutes {
+class AuthRoutes {
   constructor (userController) {
     this.router = express.Router()
     this._userController = userController
 
     this.router.post('/register', this._userController.register)
+    this.router.post('/login', this._userController.login)
   }
 }
 
-module.exports = UserRoutes
+module.exports = AuthRoutes
