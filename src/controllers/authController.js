@@ -1,6 +1,6 @@
 const ClientError = require('../errors/clientError')
 
-class UserController {
+class AuthController {
   constructor (userService, validtor, response, hashPassword, tokenize) {
     this._userService = userService
     this._validator = validtor
@@ -74,4 +74,4 @@ class UserController {
   }
 }
 
-module.exports = UserController
+module.exports = AuthController

@@ -7,12 +7,10 @@ class Tokenize {
   }
 
   async sign (user) {
-    const { _id, username, fullName } = user
+    const { _id } = user
     return jwt.sign({
-      _id,
-      username,
-      fullName
-    }, process.env.PORT, { expiresIn: '1h' })
+      _id
+    }, process.env.SECRET || 'secret', { expiresIn: '1h' })
   }
 }
 
