@@ -1,4 +1,4 @@
-const User = require('../models/user')
+const { User } = require('../models/user')
 const ClientError = require('../errors/clientError')
 
 class UserService {

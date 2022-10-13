@@ -14,7 +14,7 @@ class AuthController {
 
   async register (req, res) {
     const payload = req.body
-    const { username, email, password, fullName, dateOfBirth } = payload
+    const { username, email, password, fullName, gender, dateOfBirth } = payload
 
     try {
       // Validate payload
@@ -27,7 +27,7 @@ class AuthController {
       const hash = await this._hashPassword.hash(password)
 
       // Create user
-      const user = await this._userService.createUser({ username, email, password: hash, fullName, dateOfBirth })
+      const user = await this._userService.createUser({ username, email, password: hash, fullName, gender, dateOfBirth })
 
       // Return response
       const response = this._response.success(201, 'User created successfully.', user)
