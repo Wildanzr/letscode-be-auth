@@ -6,7 +6,7 @@ const registerSchema = Joi.object({
   password: Joi.string().min(8).max(30).required(),
   confirmPassword: Joi.ref('password'),
   fullName: Joi.string().min(3).max(100).required(),
-  gender: Joi.boolean().required(),
+  gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
   dateOfBirth: Joi.date().required(),
   role: Joi.number().required().valid(0, 1)
 })
@@ -41,6 +41,13 @@ const changePasswordSchema = Joi.object({
   confirmNewPassword: Joi.ref('newPassword')
 })
 
+const updateProfileSchema = Joi.object({
+  fullName: Joi.string().min(3).max(200).required(),
+  email: Joi.string().email().required(),
+  gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
+  dateOfBirth: Joi.date().required()
+})
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -48,5 +55,6 @@ module.exports = {
   verifyAccountSchema,
   checkTokenSchema,
   resetPasswordSchema,
-  changePasswordSchema
+  changePasswordSchema,
+  updateProfileSchema
 }

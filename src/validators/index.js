@@ -6,7 +6,8 @@ const {
   verifyAccountSchema,
   checkTokenSchema,
   resetPasswordSchema,
-  changePasswordSchema
+  changePasswordSchema,
+  updateProfileSchema
 } = require('./schema')
 
 class Validator {
@@ -47,6 +48,11 @@ class Validator {
 
   validateChangePassword (payload) {
     const { error } = changePasswordSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateUpdateProfile (payload) {
+    const { error } = updateProfileSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

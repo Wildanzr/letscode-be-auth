@@ -18,12 +18,13 @@ class UserService {
     return await User.findOne({ _id: id })
   }
 
-  async updateUser (username, user) {
-    return await User.findOneAndUpdate({ username }, user, { new: true })
-  }
-
   async updatePassword (email, hashed) {
     return await User.findOneAndUpdate({ email }, { password: hashed }, { new: true })
+  }
+
+  async updateUser (id, payload) {
+    const { fullName, email, gender, dateOfBirth } = payload
+    return await User.findOneAndUpdate({ _id: id }, { fullName, email, gender, dateOfBirth }, { new: true })
   }
 
   async deleteUser (username) {
