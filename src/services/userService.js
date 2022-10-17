@@ -22,6 +22,10 @@ class UserService {
     return await User.findOneAndUpdate({ username }, user, { new: true })
   }
 
+  async updatePassword (email, hashed) {
+    return await User.findOneAndUpdate({ email }, { password: hashed }, { new: true })
+  }
+
   async deleteUser (username) {
     return await User.findOneAndDelete({ username })
   }

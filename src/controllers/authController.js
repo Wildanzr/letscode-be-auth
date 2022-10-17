@@ -171,7 +171,16 @@ class AuthController {
       let tokenData = await this._authService.getTokenByEmail(email)
       if (!tokenData) tokenData = await this._authService.createToken(email)
 
+      const { token } = tokenData
+      const { fullName } = user
+
       // Send email
+      const message = {
+        name: fullName,
+        email,
+        link: `http://localhost:5173/api/v1/auth/reset-password?token=${token}`
+      }
+      await this._mailService.sendEmail(message, 'Reset password instruction.', 'forgot')
 
       // Return response
       const response = this._response.success(200, 'Please check your email to reset your password.')
@@ -183,30 +192,52 @@ class AuthController {
   }
 
   async checkToken (req, res) {
+    const query = req.query
+    const { token } = query
     try {
       // Validate payload
+      this._validator.validateCheckToken({ token })
 
       // Check token
+      const tokenData = await this._authService.getTokenByToken(token)
+
+      const isTokenValid = !!tokenData
 
       // Return response
-      return res.status(200).json({ message: 'Check Token' })
+      const response = this._response.success(200, isTokenValid ? 'Token is valid.' : 'Token not valid', { isTokenValid })
+
+      return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
     }
   }
 
   async resetPassword (req, res) {
+    const { password, confirmPassword } = req.body
+    const { token } = req.query
+
     try {
       // Validate payload
+      this._validator.validateResetPassword({ token, password, confirmPassword })
 
       // Check token
+      const tokenData = await this._authService.getTokenByToken(token)
+      if (!tokenData) throw new ClientError('Invalid token.', 401)
 
       // Hash password
+      const hashed = await this._hashPassword.hash(password)
 
       // Update password
+      const { email } = tokenData
+      await this._userService.updatePassword(email, hashed)
+
+      // Delete token
+      await this._authService.deleteToken(token)
 
       // Return response
-      return res.status(200).json({ message: 'Reset password' })
+      const response = this._response.success(200, 'Your password has been reset.')
+
+      return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
     }
