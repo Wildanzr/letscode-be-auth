@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./authService'),
-  ...require('./userService')
+  ...require('./userService'),
+  ...require('./mail')
 }

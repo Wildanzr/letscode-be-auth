@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 
 class AuthController {
-  constructor (authService, userService, validator, response, hashPassword, tokenize) {
+  constructor (authService, userService, mailService, validator, response, hashPassword, tokenize) {
     this._authService = authService
     this._userService = userService
+    this._mailService = mailService
     this._validator = validator
     this._response = response
     this._hashPassword = hashPassword
@@ -12,6 +13,7 @@ class AuthController {
     this.register = this.register.bind(this)
     this.login = this.login.bind(this)
     this.about = this.about.bind(this)
+    this.verifyAccount = this.verifyAccount.bind(this)
     this.forgotPassword = this.forgotPassword.bind(this)
     this.checkToken = this.checkToken.bind(this)
     this.resetPassword = this.resetPassword.bind(this)
@@ -36,8 +38,16 @@ class AuthController {
       await this._authService.createUser({ username, email, password: hash, fullName, gender, dateOfBirth, role })
 
       // Create token for verify account
+      const TokenData = await this._authService.createToken(email)
+      const { token } = TokenData
 
       // Send email for verify account
+      const message = {
+        name: fullName,
+        email,
+        link: `http://localhost:5173/api/v1/auth/verify?token=${token}`
+      }
+      await this._mailService.sendEmail(message, 'Glad to have you on board, please verify your account.', 'register')
 
       // Return response
       const response = this._response.success(201, 'Register success, please check your email to verify your account!.')
@@ -103,6 +113,43 @@ class AuthController {
       const response = this._response.success(200, 'Auth details success.', { user })
 
       return res.status(response.statusCode).json(response)
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async verifyAccount (req, res) {
+    const query = req.query
+
+    try {
+      // Check token is exist
+      const { token } = query
+      if (!token) throw new ClientError('Invalid token.', 401)
+
+      // Validate payload
+      this._validator.validateVerifyAccount(query)
+
+      // Validate token
+      const tokenData = await this._authService.getTokenByToken(token)
+      if (!tokenData) throw new ClientError('Invalid token.', 401)
+
+      // Find user
+      const { email } = tokenData
+      const user = await this._userService.getUserByEmail(email)
+      if (!user) throw new ClientError('Invalid token.', 401)
+
+      // Verify user
+      user.isVerified = true
+      user.verifiedAt = new Date()
+      await user.save()
+
+      // Delete token
+      await this._authService.deleteToken(token)
+
+      // Response
+      const response = this._response.success(200, 'Your account has been verified.')
+
+      return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
     }

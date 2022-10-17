@@ -21,8 +21,13 @@ const forgotPasswordSchema = Joi.object({
   email: Joi.string().email().required()
 })
 
+const verifyAccountSchema = Joi.object({
+  token: Joi.string().required()
+})
+
 module.exports = {
   registerSchema,
   loginSchema,
-  forgotPasswordSchema
+  forgotPasswordSchema,
+  verifyAccountSchema
 }

@@ -22,6 +22,10 @@ class AuthService {
     })
   }
 
+  async deleteToken (token) {
+    return await Token.findOneAndDelete({ token })
+  }
+
   async createUser (user) {
     return await User.create(user)
   }
