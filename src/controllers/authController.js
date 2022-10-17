@@ -1,7 +1,8 @@
 const { ClientError } = require('../errors')
 
 class AuthController {
-  constructor (userService, validator, response, hashPassword, tokenize) {
+  constructor (authService, userService, validator, response, hashPassword, tokenize) {
+    this._authService = authService
     this._userService = userService
     this._validator = validator
     this._response = response
@@ -26,15 +27,17 @@ class AuthController {
       this._validator.validateRegister(payload)
 
       // Check duplicate username or email
-      await this._userService.checkDuplicate(username, email)
+      await this._authService.checkDuplicate(username, email)
 
       // Hash password
       const hash = await this._hashPassword.hash(password)
 
       // Create user
-      await this._userService.createUser({ username, email, password: hash, fullName, gender, dateOfBirth, role })
+      await this._authService.createUser({ username, email, password: hash, fullName, gender, dateOfBirth, role })
 
-      // To do send email
+      // Create token for verify account
+
+      // Send email for verify account
 
       // Return response
       const response = this._response.success(201, 'Register success, please check your email to verify your account!.')
@@ -94,7 +97,7 @@ class AuthController {
       const decode = await this._tokenize.verify(token)
 
       // Get user details
-      const user = await this._userService.getUserAuth(decode)
+      const user = await this._authService.getUserAuth(decode)
 
       // Return response
       const response = this._response.success(200, 'Auth details success.', { user })
@@ -106,8 +109,27 @@ class AuthController {
   }
 
   async forgotPassword (req, res) {
+    const payload = req.body
+    const { email } = payload
+
     try {
-      return res.status(200).json({ message: 'Forgot password' })
+      // Validate payload
+      this._validator.validateForgotPassword(payload)
+
+      // Check email
+      const user = await this._userService.getUserByEmail(email)
+      if (!user) throw new ClientError('Email not found.', 404)
+
+      // Check if there is active token for this user, if not generate new token
+      let tokenData = await this._authService.getTokenByEmail(email)
+      if (!tokenData) tokenData = await this._authService.createToken(email)
+
+      // Send email
+
+      // Return response
+      const response = this._response.success(200, 'Please check your email to reset your password.')
+
+      return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
     }
@@ -115,6 +137,11 @@ class AuthController {
 
   async checkToken (req, res) {
     try {
+      // Validate payload
+
+      // Check token
+
+      // Return response
       return res.status(200).json({ message: 'Check Token' })
     } catch (error) {
       return this._response.error(res, error)
@@ -123,6 +150,15 @@ class AuthController {
 
   async resetPassword (req, res) {
     try {
+      // Validate payload
+
+      // Check token
+
+      // Hash password
+
+      // Update password
+
+      // Return response
       return res.status(200).json({ message: 'Reset password' })
     } catch (error) {
       return this._response.error(res, error)
@@ -131,6 +167,21 @@ class AuthController {
 
   async changePassword (req, res) {
     try {
+      // Check token is exist
+
+      // Validate token
+
+      // Validate payload
+
+      // Find user
+
+      // Check user is verified
+
+      // Compare old password
+
+      // Hash password
+
+      // Return response
       return res.status(200).json({ message: 'Change password' })
     } catch (error) {
       return this._response.error(res, error)

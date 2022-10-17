@@ -17,7 +17,12 @@ const loginSchema = Joi.object({
   remember: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
 })
 
+const forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required()
+})
+
 module.exports = {
   registerSchema,
-  loginSchema
+  loginSchema,
+  forgotPasswordSchema
 }

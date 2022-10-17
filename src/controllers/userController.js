@@ -14,6 +14,20 @@ class UserController {
 
   async updateProfile (req, res) {
     try {
+      // Check token is exist
+
+      // Validate token
+
+      // Validate payload
+
+      // Find user
+
+      // Check user is verified
+
+      // Update user
+
+      // Response
+
       return res.status(200).json({ message: 'Update profile!' })
     } catch (error) {
       return this._response.error(res, error)
@@ -22,6 +36,21 @@ class UserController {
 
   async editAvatar (req, res) {
     try {
+      // Check token is exist
+
+      // Validate token
+
+      // Validate payload
+
+      // Find user
+
+      // Check user is verified
+
+      // Upload avatar
+
+      // Update user
+
+      // Response
       return res.status(200).json({ message: 'Edit avatar!' })
     } catch (error) {
       return this._response.error(res, error)
