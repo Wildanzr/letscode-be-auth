@@ -1,12 +1,13 @@
-const ClientError = require('../errors/clientError')
+const { ClientError } = require('../errors')
 
 class AuthController {
-  constructor (userService, validtor, response, hashPassword, tokenize) {
+  constructor (userService, validator, response, hashPassword, tokenize) {
     this._userService = userService
-    this._validator = validtor
+    this._validator = validator
     this._response = response
     this._hashPassword = hashPassword
     this._tokenize = tokenize
+
     this.register = this.register.bind(this)
     this.login = this.login.bind(this)
     this.about = this.about.bind(this)
@@ -14,7 +15,7 @@ class AuthController {
 
   async register (req, res) {
     const payload = req.body
-    const { username, email, password, fullName, gender, dateOfBirth } = payload
+    const { username, email, password, fullName, gender, dateOfBirth, role } = payload
 
     try {
       // Validate payload
@@ -27,7 +28,7 @@ class AuthController {
       const hash = await this._hashPassword.hash(password)
 
       // Create user
-      const user = await this._userService.createUser({ username, email, password: hash, fullName, gender, dateOfBirth })
+      const user = await this._userService.createUser({ username, email, password: hash, fullName, gender, dateOfBirth, role })
 
       // Return response
       const response = this._response.success(201, 'User created successfully.', user)
@@ -40,7 +41,7 @@ class AuthController {
 
   async login (req, res) {
     const payload = req.body
-    const { username, password } = payload
+    const { username, password, remember } = payload
 
     try {
       // Validate payload
@@ -63,7 +64,7 @@ class AuthController {
       }
 
       // Create token
-      const accessToken = await this._tokenize.sign(user)
+      const accessToken = await this._tokenize.sign(user, remember)
 
       // Return response
       const response = this._response.success(200, 'Login success.', { accessToken })
@@ -96,4 +97,6 @@ class AuthController {
   }
 }
 
-module.exports = AuthController
+module.exports = {
+  AuthController
+}

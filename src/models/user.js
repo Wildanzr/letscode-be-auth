@@ -1,11 +1,10 @@
-const mongoose = require('mongoose')
-const { Schema } = mongoose
+const { model, Schema } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const userSchema = new Schema({
   _id: {
     type: String,
-    default: `usr-${nanoid(15)}`
+    default: () => { return `usr-${nanoid(15)}` }
   },
   username: {
     type: String,
@@ -15,19 +14,27 @@ const userSchema = new Schema({
     lowercase: true
   },
   email: { type: String, required: true, unique: true, lowercase: true },
-  password: { type: String, required: true, minlength: 8 },
+  password: { type: String, required: true },
   fullName: { type: String, required: true },
   gender: { type: Boolean, required: true },
   dateOfBirth: { type: String, required: true },
-  points: { type: Number, required: true, default: 0 },
+  role: { type: Number, required: true },
+  point: { type: Number, default: 0 },
   avatar: {
     type: String,
-    default: `https://ui-avatars.com/api/?name=${this.username}`
-  }
+    default: (user) => { return `https://ui-avatars.com/api/?name=${user.username}` }
+  },
+  logActivities: [{ type: Schema.Types.String, ref: 'logs' }]
 })
 
+// Add index to fullName and username
+userSchema.index({ fullName: 'text' })
+
+// Add index to point
+userSchema.index({ point: 1 })
+
 // Create model
-const User = mongoose.model('users', userSchema)
+const User = model('users', userSchema)
 
 module.exports = {
   User,

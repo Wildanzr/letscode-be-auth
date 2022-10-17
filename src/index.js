@@ -5,36 +5,28 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 // Service
-const UserService = require('./services/userService')
+const { UserService } = require('./services')
 const userService = new UserService()
 
 // Utils
-const Response = require('./utils/response')
-const HashPassword = require('./utils/hashPassword')
-const Tokenize = require('./utils/tokenization')
+const { Response, HashPassword, Tokenize } = require('./utils')
 const response = new Response()
 const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
-// Controller
-const AuthController = require('./controllers/authController')
-const UserController = require('./controllers/userController')
-
-// Routes
-const AuthRoutes = require('./routes/authRoutes')
-const UserRoutes = require('./routes/userRoutes')
-
 // Validator
-const Validator = require('./validators')
+const { Validator } = require('./validators')
 const validator = new Validator()
 
-// Auth Routes
+// Controller
+const { AuthController, UserController } = require('./controllers')
 const authController = new AuthController(userService, validator, response, hashPassword, tokenize)
-const authRoutes = new AuthRoutes(authController)
-
-// User Routes
 const userController = new UserController(userService, validator, response, hashPassword, tokenize)
+
+// Routes
+const { AuthRoutes, UserRoutes } = require('./routes')
 const userRoutes = new UserRoutes(userController)
+const authRoutes = new AuthRoutes(authController)
 
 // Init express
 require('dotenv').config()

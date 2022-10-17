@@ -1,16 +1,9 @@
 const { User } = require('../models/user')
-const ClientError = require('../errors/clientError')
+const { ClientError } = require('../errors')
 
 class UserService {
   constructor () {
-    this.getUserByUsername = this.getUserByUsername.bind(this)
-    this.getUserById = this.getUserById.bind(this)
-    this.checkUsernameOrEmail = this.checkUsernameOrEmail.bind(this)
-    this.getUserAuth = this.getUserAuth.bind(this)
-    this.createUser = this.createUser.bind(this)
-    this.updateUser = this.updateUser.bind(this)
-    this.deleteUser = this.deleteUser.bind(this)
-    this.checkDuplicate = this.checkDuplicate.bind(this)
+    this.name = 'UserService'
   }
 
   async getUserByUsername (username) {
@@ -63,4 +56,6 @@ class UserService {
   }
 }
 
-module.exports = UserService
+module.exports = {
+  UserService
+}

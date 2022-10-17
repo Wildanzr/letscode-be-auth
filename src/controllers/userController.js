@@ -1,4 +1,4 @@
-// const ClientError = require('../errors/clientError')
+// const { ClientError } = require('../errors')
 
 class UserController {
   constructor (userService, validtor, response, hashPassword, tokenize) {
@@ -20,4 +20,6 @@ class UserController {
   }
 }
 
-module.exports = UserController
+module.exports = {
+  UserController
+}

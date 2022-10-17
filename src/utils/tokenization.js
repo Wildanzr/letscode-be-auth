@@ -1,18 +1,16 @@
 const jwt = require('jsonwebtoken')
-const ClientError = require('../errors/clientError')
+const { ClientError } = require('../errors')
 
 class Tokenize {
   constructor () {
     this.name = 'Tokenize'
-    this.sign = this.sign.bind(this)
-    this.verify = this.verify.bind(this)
   }
 
-  async sign (user) {
+  async sign (user, duration) {
     const { _id } = user
     return jwt.sign({
       _id
-    }, process.env.SECRET || 'secret', { expiresIn: '1h' })
+    }, process.env.SECRET || 'secret', { expiresIn: duration ? '7d' : '1d' })
   }
 
   async verify (token) {
@@ -25,4 +23,6 @@ class Tokenize {
   }
 }
 
-module.exports = Tokenize
+module.exports = {
+  Tokenize
+}

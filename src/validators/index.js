@@ -1,4 +1,4 @@
-const ClientError = require('../errors/clientError')
+const { ClientError } = require('../errors')
 const {
   registerSchema,
   loginSchema
@@ -21,4 +21,6 @@ class Validator {
   }
 }
 
-module.exports = Validator
+module.exports = {
+  Validator
+}

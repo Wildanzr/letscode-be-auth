@@ -9,4 +9,6 @@ class UserRoutes {
   }
 }
 
-module.exports = UserRoutes
+module.exports = {
+  UserRoutes
+}

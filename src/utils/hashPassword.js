@@ -2,8 +2,7 @@ const bcrypt = require('bcrypt')
 
 class HashPassword {
   constructor () {
-    this.hash = this.hash.bind(this)
-    this.compare = this.compare.bind(this)
+    this.name = 'hashPassword'
   }
 
   async hash (password) {
@@ -15,4 +14,6 @@ class HashPassword {
   }
 }
 
-module.exports = HashPassword
+module.exports = {
+  HashPassword
+}

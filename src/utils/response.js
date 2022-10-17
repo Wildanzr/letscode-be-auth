@@ -1,8 +1,6 @@
 class Response {
   constructor () {
-    this.success = this.success.bind(this)
-    this.fail = this.fail.bind(this)
-    this.error = this.error.bind(this)
+    this.name = 'response'
   }
 
   success (statusCode, message, data) {
@@ -38,4 +36,6 @@ class Response {
   }
 }
 
-module.exports = Response
+module.exports = {
+  Response
+}
