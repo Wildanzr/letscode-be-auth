@@ -35,11 +35,18 @@ const resetPasswordSchema = Joi.object({
   confirmPassword: Joi.ref('password')
 })
 
+const changePasswordSchema = Joi.object({
+  oldPassword: Joi.string().min(8).max(30).required(),
+  newPassword: Joi.string().min(8).max(30).required(),
+  confirmNewPassword: Joi.ref('newPassword')
+})
+
 module.exports = {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   verifyAccountSchema,
   checkTokenSchema,
-  resetPasswordSchema
+  resetPasswordSchema,
+  changePasswordSchema
 }
