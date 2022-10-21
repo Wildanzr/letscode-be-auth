@@ -1,10 +1,10 @@
 const { ClientError } = require('../errors')
 
 class AuthController {
-  constructor (authService, userService, mailService, validator, response, hashPassword, tokenize) {
+  constructor (authService, userService, producer, validator, response, hashPassword, tokenize) {
     this._authService = authService
     this._userService = userService
-    this._mailService = mailService
+    this._producer = producer
     this._validator = validator
     this._response = response
     this._hashPassword = hashPassword
@@ -42,12 +42,17 @@ class AuthController {
       const { token } = TokenData
 
       // Send email for verify account
-      const message = {
-        name: fullName,
-        email,
-        link: `http://localhost:5173/api/v1/auth/verify?token=${token}`
+      const mail = {
+        message: {
+          name: fullName,
+          email,
+          link: `http://localhost:5173/api/v1/auth/verify?token=${token}`
+        },
+        subject: 'Glad to have you on board, please verify your account',
+        template: 'register'
       }
-      await this._mailService.sendEmail(message, 'Glad to have you on board, please verify your account.', 'register')
+
+      await this._producer.sendMessage('mail', mail)
 
       // Return response
       const response = this._response.success(201, 'Register success, please check your email to verify your account!.')
@@ -175,12 +180,18 @@ class AuthController {
       const { fullName } = user
 
       // Send email
-      const message = {
-        name: fullName,
-        email,
-        link: `http://localhost:5173/api/v1/auth/reset-password?token=${token}`
+      // Send email for verify account
+      const mail = {
+        message: {
+          name: fullName,
+          email,
+          link: `http://localhost:5173/api/v1/auth/reset-password?token=${token}`
+        },
+        subject: 'Reset password instruction',
+        template: 'forgot'
       }
-      await this._mailService.sendEmail(message, 'Reset password instruction.', 'forgot')
+
+      await this._producer.sendMessage('mail', mail)
 
       // Return response
       const response = this._response.success(200, 'Please check your email to reset your password.')
