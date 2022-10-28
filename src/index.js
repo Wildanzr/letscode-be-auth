@@ -1,3 +1,6 @@
+require('dotenv').config()
+const morgan = require('morgan')
+
 // Database
 const mongoose = require('mongoose')
 
@@ -31,12 +34,14 @@ const userRoutes = new UserRoutes(userController)
 const authRoutes = new AuthRoutes(authController)
 
 // Init express
-require('dotenv').config()
 const express = require('express')
 const app = express()
 
 // Init body-parser
 app.use(express.json())
+
+// Logging
+app.use(morgan('combined'))
 
 // Cors
 app.use(cors())
