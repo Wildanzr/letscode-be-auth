@@ -42,11 +42,12 @@ class AuthController {
       const { token } = TokenData
 
       // Send email for verify account
+      const clientUrl = process.env.CLIENT_HOST
       const mail = {
         message: {
           name: fullName,
           email,
-          link: `http://localhost:5173/api/v1/auth/verify?token=${token}`
+          link: `${clientUrl}/auth/activate?token=${token}`
         },
         subject: 'Glad to have you on board, please verify your account',
         template: 'register'
