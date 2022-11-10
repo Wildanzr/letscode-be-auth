@@ -1,5 +1,4 @@
 require('dotenv').config()
-const morgan = require('morgan')
 
 // Database
 const mongoose = require('mongoose')
@@ -39,9 +38,6 @@ const app = express()
 
 // Init body-parser
 app.use(express.json())
-
-// Logging
-app.use(morgan('combined'))
 
 // Cors
 app.use(cors())
