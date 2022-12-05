@@ -48,6 +48,14 @@ const updateProfileSchema = Joi.object({
   dateOfBirth: Joi.date().required()
 })
 
+const checkUsernameSchema = Joi.object({
+  username: Joi.string().min(3).max(20).required()
+})
+
+const checkEmailSchema = Joi.object({
+  email: Joi.string().email().required()
+})
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -56,5 +64,7 @@ module.exports = {
   checkTokenSchema,
   resetPasswordSchema,
   changePasswordSchema,
-  updateProfileSchema
+  updateProfileSchema,
+  checkUsernameSchema,
+  checkEmailSchema
 }

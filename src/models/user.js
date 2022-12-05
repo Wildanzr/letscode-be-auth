@@ -17,7 +17,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   fullName: { type: String, required: true },
   gender: { type: Boolean, required: true },
-  dateOfBirth: { type: String, required: true },
+  dateOfBirth: { type: Date, required: true },
   role: { type: Number, required: true },
   isVerified: { type: Boolean, default: false },
   verifiedAt: { type: Date, default: null },

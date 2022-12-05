@@ -30,6 +30,16 @@ class UserService {
   async deleteUser (username) {
     return await User.findOneAndDelete({ username })
   }
+
+  async checkUsernameIsTaken (username) {
+    const user = await User.findOne({ username: username.toLowerCase() })
+    return !!user
+  }
+
+  async checkEmailIsTaken (email) {
+    const user = await User.findOne({ email: email.toLowerCase() })
+    return !!user
+  }
 }
 
 module.exports = {

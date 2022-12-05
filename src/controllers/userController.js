@@ -8,8 +8,11 @@ class UserController {
     this._hashPassword = hashPassword
     this._tokenize = tokenize
 
+    // Bind method
     this.updateProfile = this.updateProfile.bind(this)
     this.editAvatar = this.editAvatar.bind(this)
+    this.checkUsernameIsTaken = this.checkUsernameIsTaken.bind(this)
+    this.checkEmailIsTaken = this.checkEmailIsTaken.bind(this)
   }
 
   async updateProfile (req, res) {
@@ -64,6 +67,44 @@ class UserController {
 
       // Response
       return res.status(200).json({ message: 'Edit avatar!' })
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkUsernameIsTaken (req, res) {
+    const { username } = req.query
+
+    try {
+      // Validate payload
+      this._validator.validateCheckUsername({ username })
+
+      // Check username is taken
+      const isTaken = await this._userService.checkUsernameIsTaken(username)
+
+      // Response
+      const response = this._response.success(200, 'Check username success.', { isTaken })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkEmailIsTaken (req, res) {
+    const { email } = req.query
+
+    try {
+      // Validate payload
+      this._validator.validateCheckEmail({ email })
+
+      // Check email is taken
+      const isTaken = await this._userService.checkEmailIsTaken(email)
+
+      // Response
+      const response = this._response.success(200, 'Check email success.', { isTaken })
+
+      return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
     }
