@@ -12,7 +12,7 @@ class AuthRoutes {
     this.router.post('/forgot-password', this._authController.forgotPassword)
     this.router.get('/reset-password', this._authController.checkToken)
     this.router.post('/reset-password', this._authController.resetPassword)
-    this.router.post('/change-password', this._authController.changePassword)
+    this.router.put('/change-password', this._authController.changePassword)
   }
 }
 
