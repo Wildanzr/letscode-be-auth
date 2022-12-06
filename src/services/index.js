@@ -1,5 +1,6 @@
 module.exports = {
   ...require('./authService'),
   ...require('./userService'),
-  ...require('./producer')
+  ...require('./producer'),
+  ...require('./competeService')
 }

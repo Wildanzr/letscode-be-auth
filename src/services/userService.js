@@ -1,5 +1,5 @@
 const { User } = require('../models/user')
-// const { ClientError } = require('../errors')
+const { ClientError } = require('../errors')
 
 class UserService {
   constructor () {
@@ -39,6 +39,14 @@ class UserService {
   async checkEmailIsTaken (email) {
     const user = await User.findOne({ email: email.toLowerCase() })
     return !!user
+  }
+
+  async getProfile (username) {
+    const user = await User.findOne({ username: username.toLowerCase() })
+      .select('username fullName gender dateOfBirth point avatar')
+      .exec()
+    if (!user) throw new ClientError('User not found.', 404)
+    return user
   }
 }
 

@@ -7,10 +7,11 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 // Service
-const { UserService, AuthService, Producer } = require('./services')
+const { UserService, AuthService, Producer, CompeteService } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
 const producer = new Producer()
+const competeService = new CompeteService()
 
 // Utils
 const { Response, HashPassword, Tokenize } = require('./utils')
@@ -25,7 +26,7 @@ const validator = new Validator()
 // Controller
 const { AuthController, UserController } = require('./controllers')
 const authController = new AuthController(authService, userService, producer, validator, response, hashPassword, tokenize)
-const userController = new UserController(userService, validator, response, hashPassword, tokenize)
+const userController = new UserController(userService, competeService, validator, response, hashPassword, tokenize)
 
 // Routes
 const { AuthRoutes, UserRoutes } = require('./routes')

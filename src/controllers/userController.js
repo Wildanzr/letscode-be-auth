@@ -1,8 +1,9 @@
 const { ClientError } = require('../errors')
 
 class UserController {
-  constructor (userService, validtor, response, hashPassword, tokenize) {
+  constructor (userService, competeService, validtor, response, hashPassword, tokenize) {
     this._userService = userService
+    this._competeService = competeService
     this._validator = validtor
     this._response = response
     this._hashPassword = hashPassword
@@ -13,6 +14,7 @@ class UserController {
     this.editAvatar = this.editAvatar.bind(this)
     this.checkUsernameIsTaken = this.checkUsernameIsTaken.bind(this)
     this.checkEmailIsTaken = this.checkEmailIsTaken.bind(this)
+    this.getProfile = this.getProfile.bind(this)
   }
 
   async updateProfile (req, res) {
@@ -106,6 +108,54 @@ class UserController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async getProfile (req, res) {
+    const { username } = req.params
+
+    try {
+      // Validate payload
+      this._validator.validateCheckUsername({ username })
+
+      // Find user
+      const user = await this._userService.getProfile(username)
+
+      // Get all compete journeys
+      const journeys = await this._competeService.getAllJourneys()
+
+      // Count progress
+      let solved = 0
+      let total = 0
+
+      // Iterate journeys
+      for (const journey of journeys) {
+        const { problems } = journey
+        total += problems.length
+
+        // Iterate problems
+        for (const problem of problems) {
+          const isDone = await this._competeService.checkCPIsDone(problem, user._id)
+          if (isDone === 2) solved++
+        }
+      }
+
+      // Count progress as percentage with 2 decimal places
+      const progress = parseFloat((solved / total * 100).toFixed(2))
+
+      // Payload
+      const journey = {
+        progress,
+        point: user.point
+      }
+
+      // Response
+      const response = this._response.success(200, 'Get profile success.', { user, journey })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
       return this._response.error(res, error)
     }
   }
