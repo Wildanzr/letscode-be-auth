@@ -9,7 +9,8 @@ const {
   changePasswordSchema,
   updateProfileSchema,
   checkUsernameSchema,
-  checkEmailSchema
+  checkEmailSchema,
+  editPictureSchema
 } = require('./schema')
 
 class Validator {
@@ -65,6 +66,11 @@ class Validator {
 
   validateCheckEmail (payload) {
     const { error } = checkEmailSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateEditPicture (payload) {
+    const { error } = editPictureSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

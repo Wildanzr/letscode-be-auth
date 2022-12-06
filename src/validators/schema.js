@@ -56,6 +56,11 @@ const checkEmailSchema = Joi.object({
   email: Joi.string().email().required()
 })
 
+const editPictureSchema = Joi.object({
+  mimetype: Joi.string().valid('image/jpeg', 'image/png').required(),
+  size: Joi.number().integer().max(2 * 1024 * 1024).required()
+})
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -66,5 +71,6 @@ module.exports = {
   changePasswordSchema,
   updateProfileSchema,
   checkUsernameSchema,
-  checkEmailSchema
+  checkEmailSchema,
+  editPictureSchema
 }

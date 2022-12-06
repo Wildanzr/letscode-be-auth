@@ -2,5 +2,6 @@ module.exports = {
   ...require('./authService'),
   ...require('./userService'),
   ...require('./producer'),
-  ...require('./competeService')
+  ...require('./competeService'),
+  ...require('./storageService')
 }

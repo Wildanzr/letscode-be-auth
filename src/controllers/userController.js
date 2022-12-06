@@ -1,8 +1,9 @@
 const { ClientError } = require('../errors')
 
 class UserController {
-  constructor (userService, competeService, validtor, response, hashPassword, tokenize) {
+  constructor (userService, storageService, competeService, validtor, response, hashPassword, tokenize) {
     this._userService = userService
+    this._storageService = storageService
     this._competeService = competeService
     this._validator = validtor
     this._response = response
@@ -51,23 +52,38 @@ class UserController {
   }
 
   async editAvatar (req, res) {
+    const token = req.headers.authorization
+    const file = req.file
+
     try {
       // Check token is exist
+      if (!token) throw new ClientError('Invalid authorization.', 401)
 
       // Validate token
-
-      // Validate payload
+      const { _id } = await this._tokenize.verify(token)
 
       // Find user
+      const user = await this._userService.getUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 404)
 
-      // Check user is verified
+      // Check file is exists
+      if (!file) throw new ClientError('Please upload your picture file!', 400)
 
-      // Upload avatar
+      // Validate mime type and file size
+      const { mimetype, size } = file
+      this._validator.validateEditPicture({ mimetype, size })
 
-      // Update user
+      // Upload file to cloud storage
+      const imageUrl = await this._storageService.uploadImage(file)
 
-      // Response
-      return res.status(200).json({ message: 'Edit avatar!' })
+      // Update user profile picture
+      user.avatar = imageUrl
+      await user.save()
+
+      // Send response
+      const response = this._response.success(200, 'Edit profile picture success!')
+
+      return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
     }
