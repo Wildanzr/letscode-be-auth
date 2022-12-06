@@ -42,7 +42,7 @@ class UserService {
 
   async getProfile (username) {
     const user = await User.findOne({ username: username.toLowerCase() })
-      .select('username fullName gender dateOfBirth point avatar')
+      .select('username fullName gender dateOfBirth point avatar email bio address phone')
       .exec()
     if (!user) throw new ClientError('User not found.', 404)
     return user

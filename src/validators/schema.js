@@ -45,7 +45,10 @@ const updateProfileSchema = Joi.object({
   fullName: Joi.string().min(3).max(200).required(),
   username: Joi.string().min(3).max(20).required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
-  dateOfBirth: Joi.date().required()
+  dateOfBirth: Joi.date().required(),
+  address: Joi.string().min(3).max(1000).required(),
+  bio: Joi.string().min(3).max(500).required(),
+  phone: Joi.string().min(8).max(20).required()
 })
 
 const checkUsernameSchema = Joi.object({
