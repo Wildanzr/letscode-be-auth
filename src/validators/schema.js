@@ -43,7 +43,7 @@ const changePasswordSchema = Joi.object({
 
 const updateProfileSchema = Joi.object({
   fullName: Joi.string().min(3).max(200).required(),
-  email: Joi.string().email().required(),
+  username: Joi.string().min(3).max(20).required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
   dateOfBirth: Joi.date().required()
 })

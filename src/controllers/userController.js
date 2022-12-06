@@ -26,13 +26,12 @@ class UserController {
       if (!token) throw new ClientError('Invalid authorization.', 401)
 
       // Validate token
-      const decode = await this._tokenize.verify(token)
+      const { _id } = await this._tokenize.verify(token)
 
       // Validate payload
       this._validator.validateUpdateProfile(payload)
 
       // Find user
-      const { _id } = decode
       const user = await this._userService.getUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 404)
 

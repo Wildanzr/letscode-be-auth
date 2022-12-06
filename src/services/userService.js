@@ -23,8 +23,7 @@ class UserService {
   }
 
   async updateUser (id, payload) {
-    const { fullName, email, gender, dateOfBirth } = payload
-    return await User.findOneAndUpdate({ _id: id }, { fullName, email, gender, dateOfBirth }, { new: true })
+    return await User.findOneAndUpdate({ _id: id }, payload, { new: true })
   }
 
   async deleteUser (username) {
