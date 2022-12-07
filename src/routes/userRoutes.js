@@ -10,6 +10,7 @@ class UserRoutes {
     this.router.post('/avatar', this._userController.editAvatar)
     this.router.get('/username', this._userController.checkUsernameIsTaken)
     this.router.get('/email', this._userController.checkEmailIsTaken)
+    this.router.post('/travel', this._userController.travelLog)
   }
 }
 

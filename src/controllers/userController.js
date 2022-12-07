@@ -16,6 +16,7 @@ class UserController {
     this.checkUsernameIsTaken = this.checkUsernameIsTaken.bind(this)
     this.checkEmailIsTaken = this.checkEmailIsTaken.bind(this)
     this.getProfile = this.getProfile.bind(this)
+    this.travelLog = this.travelLog.bind(this)
   }
 
   async updateProfile (req, res) {
@@ -171,6 +172,36 @@ class UserController {
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async travelLog (req, res) {
+    const token = req.headers.authorization
+    const { path } = req.query
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Invalid authorization.', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.getUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 404)
+
+      // Validate payload
+      this._validator.validateTravelPath({ path })
+
+      // Add to log
+      await this._userService.addToTravelLog({ userId: _id, path })
+
+      // Response
+      const response = this._response.success(200, 'Your travel log has been updated.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
       return this._response.error(res, error)
     }
   }

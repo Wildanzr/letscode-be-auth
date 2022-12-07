@@ -1,4 +1,4 @@
-const { User } = require('../models/user')
+const { User, TravelLog } = require('../models')
 const { ClientError } = require('../errors')
 
 class UserService {
@@ -46,6 +46,10 @@ class UserService {
       .exec()
     if (!user) throw new ClientError('User not found.', 404)
     return user
+  }
+
+  async addToTravelLog (payload) {
+    return await TravelLog.create(payload)
   }
 }
 

@@ -64,6 +64,10 @@ const editPictureSchema = Joi.object({
   size: Joi.number().integer().max(2 * 1024 * 1024).required()
 })
 
+const travelPathSchema = Joi.object({
+  path: Joi.string().required()
+})
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -75,5 +79,6 @@ module.exports = {
   updateProfileSchema,
   checkUsernameSchema,
   checkEmailSchema,
-  editPictureSchema
+  editPictureSchema,
+  travelPathSchema
 }
