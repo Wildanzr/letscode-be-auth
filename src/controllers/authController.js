@@ -181,12 +181,12 @@ class AuthController {
       const { fullName } = user
 
       // Send email
-      // Send email for verify account
+      const clientUrl = process.env.CLIENT_HOST
       const mail = {
         message: {
           name: fullName,
           email,
-          link: `http://localhost:5173/api/v1/auth/reset-password?token=${token}`
+          link: `${clientUrl}/auth/reset?token=${token}`
         },
         subject: 'Reset password instruction',
         template: 'forgot'
