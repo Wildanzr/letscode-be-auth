@@ -13,7 +13,7 @@ class StorageService {
   uploadImage (file) {
     // upload file to gcp
     return new Promise((resolve, reject) => {
-      if (!file) reject(new ClientError('File is required', 400))
+      if (!file) reject(new ClientError('Mohon melampirkan foto profil!', 400))
 
       // Format name file tp avoid space
       const newFileName = `${Date.now()}-${file.originalname.replace(/\s/g, '')}`
@@ -28,7 +28,7 @@ class StorageService {
         resolve(publicUrl)
       }).on('error', (err) => {
         console.log(err)
-        reject(new ClientError('Unable to upload image, something wrong', 500))
+        reject(new ClientError('Terjadi kesalahan server saat memperbarui foto.', 500))
       }).end(file.buffer)
     })
   }
@@ -36,7 +36,7 @@ class StorageService {
   async deleteFile (fileName) {
     // delete file from gcp
     return new Promise((resolve, reject) => {
-      if (!fileName) reject(new ClientError('File name is required', 400))
+      if (!fileName) reject(new ClientError('Nama file diperlukan!', 400))
 
       const blob = bucket.file(fileName)
 

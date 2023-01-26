@@ -56,7 +56,7 @@ class AuthController {
       await this._producer.sendMessage('mail', mail)
 
       // Return response
-      const response = this._response.success(201, 'Register success, please check your email to verify your account!.')
+      const response = this._response.success(201, 'Pendaftaran berhsail, silahkan buka pesan email untuk memverifikasi akun kamu!')
 
       return res.status(response.statusCode).json(response)
     } catch (error) {
@@ -81,21 +81,21 @@ class AuthController {
         if (res[0]) user = res[0]
         else if (res[1]) user = res[1]
       })
-      if (!user) throw new ClientError('You have entered an invalid username or password.', 400)
+      if (!user) throw new ClientError('Username atau password yang dimasukkan tidak valid.', 400)
 
       // Check account is verified
-      if (!user.isVerified) throw new ClientError('Your account is not verified, please check your email to verify your account.', 401)
+      if (!user.isVerified) throw new ClientError('Akunmu masih belum terverifikasi, mohon membuka pesan email untuk mengkonfirmasi akunmu!', 401)
 
       // Check password
       if (!await this._hashPassword.compare(password, user.password)) {
-        throw new ClientError('You have entered an invalid username or password', 400)
+        throw new ClientError('Username atau password yang dimasukkan tidak valid', 400)
       }
 
       // Create token
       const accessToken = await this._tokenize.sign(user, remember)
 
       // Return response
-      const response = this._response.success(200, 'Login success.', { accessToken })
+      const response = this._response.success(200, 'Login berhasil.', { accessToken })
 
       return res.status(response.statusCode).json(response)
     } catch (error) {
@@ -107,7 +107,7 @@ class AuthController {
     const token = req.headers.authorization
     try {
       // Check token
-      if (!token) throw new ClientError('Invalid authorization.', 401)
+      if (!token) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Verify token
       const decode = await this._tokenize.verify(token)
@@ -116,7 +116,7 @@ class AuthController {
       const user = await this._authService.getUserAuth(decode)
 
       // Return response
-      const response = this._response.success(200, 'Auth details success.', { user })
+      const response = this._response.success(200, 'Berhasil mendapatkan data akun.', { user })
 
       return res.status(response.statusCode).json(response)
     } catch (error) {
@@ -130,19 +130,19 @@ class AuthController {
     try {
       // Check token is exist
       const { token } = query
-      if (!token) throw new ClientError('Invalid token.', 401)
+      if (!token) throw new ClientError('Token tidak valid.', 401)
 
       // Validate payload
       this._validator.validateVerifyAccount(query)
 
       // Validate token
       const tokenData = await this._authService.getTokenByToken(token)
-      if (!tokenData) throw new ClientError('Invalid token.', 401)
+      if (!tokenData) throw new ClientError('Token tidak valid.', 401)
 
       // Find user
       const { email } = tokenData
       const user = await this._userService.getUserByEmail(email)
-      if (!user) throw new ClientError('Invalid token.', 401)
+      if (!user) throw new ClientError('Token tidak valid.', 401)
 
       // Verify user
       user.isVerified = true
@@ -153,7 +153,7 @@ class AuthController {
       await this._authService.deleteToken(token)
 
       // Response
-      const response = this._response.success(200, 'Your account has been verified.')
+      const response = this._response.success(200, 'Akunmu telah berhasil diverifikasi.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -171,7 +171,7 @@ class AuthController {
 
       // Check email
       const user = await this._userService.getUserByEmail(email)
-      if (!user) throw new ClientError('Email not found.', 404)
+      if (!user) throw new ClientError('Email tidak ditemukan.', 404)
 
       // Check if there is active token for this user, if not generate new token
       let tokenData = await this._authService.getTokenByEmail(email)
@@ -195,7 +195,7 @@ class AuthController {
       await this._producer.sendMessage('mail', mail)
 
       // Return response
-      const response = this._response.success(200, 'Please check your email to reset your password.')
+      const response = this._response.success(200, 'Mohon membuka pesan email untuk mengatur ulang passwordmu.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -216,7 +216,7 @@ class AuthController {
       const isTokenValid = !!tokenData
 
       // Return response
-      const response = this._response.success(200, isTokenValid ? 'Token is valid.' : 'Token not valid', { isTokenValid })
+      const response = this._response.success(200, isTokenValid ? 'Token valid.' : 'Token tidak valid', { isTokenValid })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -234,7 +234,7 @@ class AuthController {
 
       // Check token
       const tokenData = await this._authService.getTokenByToken(token)
-      if (!tokenData) throw new ClientError('Invalid token.', 401)
+      if (!tokenData) throw new ClientError('Token tidak valid.', 401)
 
       // Hash password
       const hashed = await this._hashPassword.hash(password)
@@ -247,7 +247,7 @@ class AuthController {
       await this._authService.deleteToken(token)
 
       // Return response
-      const response = this._response.success(200, 'Your password has been reset.')
+      const response = this._response.success(200, 'Passwordmu berhasil diatur ulang.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -261,7 +261,7 @@ class AuthController {
 
     try {
       // Check token is exist
-      if (!token) throw new ClientError('Invalid authorization.', 401)
+      if (!token) throw new ClientError('Otorisasi tidak valid', 401)
 
       // Validate token
       const { _id } = await this._tokenize.verify(token)
@@ -271,16 +271,16 @@ class AuthController {
 
       // Find user
       const user = await this._userService.getUserById(_id)
-      if (!user) throw new ClientError('Invalid token.', 401)
+      if (!user) throw new ClientError('Token tidak valid.', 401)
 
       // Check user is verified
-      if (!user.isVerified) throw new ClientError('Your account is not verified, please check your email to verify your account.', 401)
+      if (!user.isVerified) throw new ClientError('Akunmu masih belum terverifikasi, mohon membuka pesan email untuk mengkonfirmasi akunmu!', 401)
       const { password, email } = user
 
       // Compare old password
       const { oldPassword, newPassword } = payload
       if (!await this._hashPassword.compare(oldPassword, password)) {
-        throw new ClientError('Old password is not correct.', 400)
+        throw new ClientError('Password lama tidak tidak sesuai.', 400)
       }
 
       // Hash password
@@ -290,7 +290,7 @@ class AuthController {
       await this._userService.updatePassword(email, hashed)
 
       // Return response
-      const response = this._response.success(200, 'Your password has been changed.')
+      const response = this._response.success(200, 'Password berhasil diperbarui.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

@@ -44,7 +44,7 @@ class UserService {
     const user = await User.findOne({ username: username.toLowerCase() })
       .select('username fullName gender dateOfBirth point avatar email bio address phone role')
       .exec()
-    if (!user) throw new ClientError('User not found.', 404)
+    if (!user) throw new ClientError('Data user tidak ditemukan.', 404)
     return user
   }
 
