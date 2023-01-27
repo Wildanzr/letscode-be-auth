@@ -33,7 +33,7 @@ class AuthService {
   async getUserAuth (token) {
     const { _id } = token
     // To do : get another user data
-    return await User.findOne({ _id }).select('_id username email fullName role').lean()
+    return await User.findOne({ _id }).select('_id username email fullName role avatar').lean()
   }
 
   async checkDuplicate (username, email) {
