@@ -25,7 +25,7 @@ class UserController {
 
     try {
       // Check token is exist
-      if (!token) throw new ClientError('Invalid authorization.', 401)
+      if (!token) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Validate token
       const { _id } = await this._tokenize.verify(token)
@@ -35,16 +35,16 @@ class UserController {
 
       // Find user
       const user = await this._userService.getUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 404)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 404)
 
       // Check user is verified
-      if (!user.isVerified) throw new ClientError('Sorry, ypur account is not verified ye. Please verify your account first.', 401)
+      if (!user.isVerified) throw new ClientError('Akunmu masih belum terverifikasi, mohon membuka pesan email untuk mengkonfirmasi akunmu!', 401)
 
       // Update user
       await this._userService.updateUser(_id, payload)
 
       // Response
-      const response = this._response.success(200, 'Your profile has been updated.')
+      const response = this._response.success(200, 'Berhasil memperbarui profil.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -58,17 +58,17 @@ class UserController {
 
     try {
       // Check token is exist
-      if (!token) throw new ClientError('Invalid authorization.', 401)
+      if (!token) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Validate token
       const { _id } = await this._tokenize.verify(token)
 
       // Find user
       const user = await this._userService.getUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 404)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 404)
 
       // Check file is exists
-      if (!file) throw new ClientError('Please upload your picture file!', 400)
+      if (!file) throw new ClientError('Mohon mengupload file foto profil!', 400)
 
       // Validate mime type and file size
       const { mimetype, size } = file
@@ -82,7 +82,7 @@ class UserController {
       await user.save()
 
       // Send response
-      const response = this._response.success(200, 'Edit profile picture success!')
+      const response = this._response.success(200, 'Berhasil memperbarui foto profil!')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -101,7 +101,7 @@ class UserController {
       const isTaken = await this._userService.checkUsernameIsTaken(username)
 
       // Response
-      const response = this._response.success(200, 'Check username success.', { isTaken })
+      const response = this._response.success(200, 'Berhasil mengecek username.', { isTaken })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -120,7 +120,7 @@ class UserController {
       const isTaken = await this._userService.checkEmailIsTaken(email)
 
       // Response
-      const response = this._response.success(200, 'Check email success.', { isTaken })
+      const response = this._response.success(200, 'Berhasil mengecek email.', { isTaken })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -167,7 +167,7 @@ class UserController {
       }
 
       // Response
-      const response = this._response.success(200, 'Get profile success.', { user, journey })
+      const response = this._response.success(200, 'Berhasil mendapatkan profil.', { user, journey })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -182,14 +182,14 @@ class UserController {
 
     try {
       // Check token is exist
-      if (!token) throw new ClientError('Invalid authorization.', 401)
+      if (!token) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Validate token
       const { _id } = await this._tokenize.verify(token)
 
       // Find user
       const user = await this._userService.getUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 404)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 404)
 
       // Validate payload
       this._validator.validateTravelPath({ path })
@@ -198,7 +198,7 @@ class UserController {
       await this._userService.addToTravelLog({ userId: _id, path })
 
       // Response
-      const response = this._response.success(200, 'Your travel log has been updated.')
+      const response = this._response.success(200, 'Travel log berhasil diperbarui.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

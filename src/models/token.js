@@ -1,5 +1,6 @@
 const { model, Schema } = require('mongoose')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 15)
 
 const tokenSchema = new Schema({
   _id: {

@@ -18,7 +18,7 @@ class Tokenize {
     try {
       return jwt.verify(token, process.env.SECRET || 'secret')
     } catch (error) {
-      throw new ClientError('Invalid authorization', 401)
+      throw new ClientError('Otorisasi tidak valid', 401)
     }
   }
 }

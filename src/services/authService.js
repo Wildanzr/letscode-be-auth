@@ -33,12 +33,12 @@ class AuthService {
   async getUserAuth (token) {
     const { _id } = token
     // To do : get another user data
-    return await User.findOne({ _id })
+    return await User.findOne({ _id }).select('_id username email fullName role').lean()
   }
 
   async checkDuplicate (username, email) {
     const user = await User.findOne({ $or: [{ username }, { email }] })
-    if (user) throw new ClientError('Username or email already exists.', 400)
+    if (user) throw new ClientError('Username atau email sudah ada.', 400)
   }
 }
 
