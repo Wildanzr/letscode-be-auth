@@ -1,4 +1,4 @@
-const { User, TravelLog } = require('../models')
+const { User, TravelLog, Compete, CompeteProblem } = require('../models')
 const { ClientError } = require('../errors')
 
 class UserService {
@@ -49,7 +49,50 @@ class UserService {
   }
 
   async addToTravelLog (payload) {
-    return await TravelLog.create(payload)
+    const { userId, path } = payload
+    // Determine path is
+    const pathType = path.includes('->compete')
+      ? 'compete'
+      : path.includes('->cp')
+        ? 'cp'
+        : path.includes('->')
+          ? 'user'
+          : 'none'
+
+    let newPath = path
+    const id = path.split('->')[1]
+    switch (pathType) {
+      case 'compete':
+        newPath = path.split('->compete')[0] + await this.determineCompete(id)
+        break
+      case 'cp':
+        newPath = path.split('->cp')[0] + await this.determineCompeteProblem(id)
+        break
+      case 'user':
+        newPath = path.split('->')[0] + id
+        break
+      default:
+        newPath = path
+        break
+    }
+
+    return await TravelLog.create({ userId, path: newPath })
+  }
+
+  async determineCompete (competeId) {
+    const compete = await Compete.findOne({ _id: competeId }).select('name').lean()
+    console.log(compete)
+
+    return compete.name
+  }
+
+  async determineCompeteProblem (cpId) {
+    const cp = await CompeteProblem.findOne({ _id: cpId })
+      .populate('problemId')
+      .select('problemId')
+      .lean()
+
+    return cp.problemId.title
   }
 }
 
