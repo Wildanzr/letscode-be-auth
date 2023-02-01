@@ -81,7 +81,6 @@ class UserService {
 
   async determineCompete (competeId) {
     const compete = await Compete.findOne({ _id: competeId }).select('name').lean()
-    console.log(compete)
 
     return compete.name
   }
