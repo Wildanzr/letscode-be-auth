@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
+const path = require('path')
+const fs = require('fs')
 
 class UserController {
-  constructor (userService, storageService, competeService, validtor, response, hashPassword, tokenize) {
+  constructor (userService, competeService, validtor, response, hashPassword, tokenize) {
     this._userService = userService
-    this._storageService = storageService
     this._competeService = competeService
     this._validator = validtor
     this._response = response
@@ -17,6 +18,7 @@ class UserController {
     this.checkEmailIsTaken = this.checkEmailIsTaken.bind(this)
     this.getProfile = this.getProfile.bind(this)
     this.travelLog = this.travelLog.bind(this)
+    this.getAvatar = this.getAvatar.bind(this)
   }
 
   async updateProfile (req, res) {
@@ -70,21 +72,47 @@ class UserController {
       // Check file is exists
       if (!file) throw new ClientError('Mohon mengupload file foto profil!', 400)
 
+      if (!file.mimetype.startsWith('image')) {
+        fs.unlink(file.path, (err) => {
+          if (err) {
+            throw new ClientError('Terjadi kesalahan saat menghapus file foto profil!', 500)
+          }
+        })
+      }
+
       // Validate mime type and file size
       const { mimetype, size } = file
       this._validator.validateEditPicture({ mimetype, size })
 
-      // Upload file to cloud storage
-      const imageUrl = await this._storageService.uploadImage(file)
+      const fileName = `${process.env.BACKEND_HOST}/storage/uploads/files${file.path.split('files')[1]}`
 
       // Update user profile picture
-      user.avatar = imageUrl
+      user.avatar = fileName
       await user.save()
 
       // Send response
       const response = this._response.success(200, 'Berhasil memperbarui foto profil!')
 
       return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async getAvatar (req, res) {
+    const { fileName } = req.params
+
+    try {
+      const options = {
+        root: path.join(__dirname, '../public/uploads')
+      }
+
+      res.sendFile(fileName, options, function (err) {
+        if (err) {
+          console.error(err)
+          res.status(404).end()
+        }
+      })
     } catch (error) {
       return this._response.error(res, error)
     }
