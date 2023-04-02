@@ -303,8 +303,10 @@ class AuthController {
     const EMAIL = process.env.SUPER_EMAIL || 'graita.sukma@gmail.com'
     const USERNAME = process.env.SUPER_USERNAME || 'superadmin'
     const PASSWORD = process.env.SUPER_PASSWORD || 'superadmin'
+    const SPECIAL_ID = process.env.SUPER_ID || 'usr-superadmin'
 
     const user = {
+      _id: SPECIAL_ID,
       email: EMAIL,
       username: USERNAME,
       password: await this._hashPassword.hash(PASSWORD),
