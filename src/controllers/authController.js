@@ -18,6 +18,7 @@ class AuthController {
     this.checkToken = this.checkToken.bind(this)
     this.resetPassword = this.resetPassword.bind(this)
     this.changePassword = this.changePassword.bind(this)
+    this.initSuperAdmin = this.initSuperAdmin.bind(this)
   }
 
   async register (req, res) {
@@ -296,6 +297,26 @@ class AuthController {
     } catch (error) {
       return this._response.error(res, error)
     }
+  }
+
+  async initSuperAdmin (req, res) {
+    const EMAIL = process.env.SUPER_EMAIL || 'graita.sukma@gmail.com'
+    const USERNAME = process.env.SUPER_USERNAME || 'superadmin'
+    const PASSWORD = process.env.SUPER_PASSWORD || 'superadmin'
+
+    const user = {
+      email: EMAIL,
+      username: USERNAME,
+      password: await this._hashPassword.hash(PASSWORD),
+      fullName: 'Super Admin',
+      gender: true,
+      dateOfBirth: new Date(),
+      role: 2,
+      isVerified: true,
+      verifiedAt: new Date()
+    }
+
+    await this._authService.initSuperAdmin(user)
   }
 }
 

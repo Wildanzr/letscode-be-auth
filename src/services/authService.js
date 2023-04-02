@@ -2,6 +2,8 @@ const { User, Token } = require('../models')
 const { ClientError } = require('../errors')
 const crypto = require('crypto')
 
+const { logger } = require('../utils/logger')
+
 class AuthService {
   constructor () {
     this.name = 'authService'
@@ -39,6 +41,25 @@ class AuthService {
   async checkDuplicate (username, email) {
     const user = await User.findOne({ $or: [{ username }, { email }] })
     if (user) throw new ClientError('Username atau email sudah ada.', 400)
+  }
+
+  async initSuperAdmin (payload) {
+    const { username, email } = payload
+    try {
+      logger('Start init super admin...')
+      // Check if super admin already exist
+      logger('Checking if super admin already exist...')
+      if (await this.checkDuplicate(username, email)) return
+
+      // Create super admin
+      logger('Creating super admin...')
+      await this.createUser(payload)
+
+      logger('Init super admin success.')
+      logger('--------------------------------')
+    } catch (error) {
+      logger(error)
+    }
   }
 }
 

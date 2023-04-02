@@ -1,5 +1,6 @@
 module.exports = {
   ...require('./hashPassword'),
   ...require('./response'),
-  ...require('./tokenization')
+  ...require('./tokenization'),
+  ...require('./logger')
 }

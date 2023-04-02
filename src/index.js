@@ -55,6 +55,9 @@ app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/user', userRoutes.router)
 app.use('/storage', storageRoutes.router)
 
+// Init Super Admin
+authController.initSuperAdmin()
+
 // Set port, listen for requests
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
