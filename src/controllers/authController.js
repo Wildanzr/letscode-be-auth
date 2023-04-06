@@ -57,7 +57,7 @@ class AuthController {
       await this._producer.sendMessage('mail', mail)
 
       // Return response
-      const response = this._response.success(201, 'Pendaftaran berhsail, silahkan buka pesan email untuk memverifikasi akun kamu!')
+      const response = this._response.success(201, 'Pendaftaran berhsail, silahkan cek inbox email atau spam untuk memverifikasi akun kamu!')
 
       return res.status(response.statusCode).json(response)
     } catch (error) {
