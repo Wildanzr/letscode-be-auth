@@ -1,6 +1,7 @@
 const { ClientError } = require('../errors')
 const path = require('path')
 const fs = require('fs')
+const { logger } = require('../utils/logger')
 
 class UserController {
   constructor (userService, competeService, validtor, response, hashPassword, tokenize) {
@@ -85,6 +86,19 @@ class UserController {
       this._validator.validateEditPicture({ mimetype, size })
 
       const fileName = `${process.env.BACKEND_HOST}/storage/uploads/files${file.path.split('files')[1]}`
+
+      // Delete old avatar
+      if (user.avatar.includes('storage')) {
+        const oldAvatar = user.avatar.split('/storage')[1]
+        console.log(oldAvatar)
+        fs.unlink(path.join(__dirname, `../public${oldAvatar}`), (err) => {
+          if (err) {
+            logger(err)
+          } else {
+            logger('Old avatar deleted!')
+          }
+        })
+      }
 
       // Update user profile picture
       user.avatar = fileName
