@@ -90,12 +90,11 @@ class UserController {
       // Delete old avatar
       if (user.avatar.includes('storage')) {
         const oldAvatar = user.avatar.split('/storage')[1]
-        console.log(oldAvatar)
         fs.unlink(path.join(__dirname, `../public${oldAvatar}`), (err) => {
           if (err) {
-            logger(err)
+            logger.error(err)
           } else {
-            logger('Old avatar deleted!')
+            logger.info('Old avatar deleted!')
           }
         })
       }
@@ -123,7 +122,7 @@ class UserController {
 
       res.sendFile(fileName, options, function (err) {
         if (err) {
-          console.error(err)
+          logger.error(err)
           res.status(404).end()
         }
       })
@@ -213,7 +212,7 @@ class UserController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }

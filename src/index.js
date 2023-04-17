@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+const { logger } = require('./utils/logger')
+
 // Database
 const mongoose = require('mongoose')
 
@@ -48,7 +50,7 @@ app.use(cors())
 mongoose.connect(process.env.DATABASE_URL, {
   useNewURLParser: true,
   useUnifiedTopology: true
-}).then(console.log('connected to db')).catch((err) => console.log(err))
+}).then(logger.info('connected to db')).catch((err) => logger.error(err))
 
 // Use routes
 app.use('/api/v1/auth', authRoutes.router)
@@ -61,5 +63,5 @@ authController.initSuperAdmin()
 // Set port, listen for requests
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`)
+  logger.info(`Server is running on port ${PORT}.`)
 })

@@ -1,5 +1,6 @@
 const amqp = require('amqplib')
 const { ClientError } = require('../errors')
+const { logger } = require('../utils/logger')
 
 class Producer {
   constructor () {
@@ -30,7 +31,7 @@ class Producer {
         this._connection.close()
       }, 500)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       const message = error.message || 'Internal Server Error'
       const statusCode = error.statusCode || 500
       throw new ClientError(message, statusCode)

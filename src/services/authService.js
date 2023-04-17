@@ -46,19 +46,18 @@ class AuthService {
   async initSuperAdmin (payload) {
     const { username, email } = payload
     try {
-      logger('Start init super admin...')
+      logger.info('Start init super admin...')
       // Check if super admin already exist
-      logger('Checking if super admin already exist...')
+      logger.info('Checking if super admin already exist...')
       if (await this.checkDuplicate(username, email)) return
 
       // Create super admin
-      logger('Creating super admin...')
+      logger.info('Creating super admin...')
       await this.createUser(payload)
 
-      logger('Init super admin success.')
-      logger('--------------------------------')
+      logger.info('Init super admin success.')
     } catch (error) {
-      logger(error)
+      logger.warn(error)
     }
   }
 }

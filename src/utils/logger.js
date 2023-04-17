@@ -1,7 +1,12 @@
-function logger (message) {
-  const timestamp = new Date().toLocaleString()
-  console.log(`${timestamp} - ${message}`)
-}
+const pretty = require('pino-pretty')
+const pino = require('pino')
+const stream = pretty({
+  colorize: true,
+  colorizeObjects: true,
+  translateTime: 'SYS:standard',
+  ignore: 'pid,hostname'
+})
+const logger = pino(stream)
 
 module.exports = {
   logger
