@@ -65,7 +65,10 @@ const editPictureSchema = Joi.object({
 })
 
 const travelPathSchema = Joi.object({
-  path: Joi.string().required()
+  path: Joi.string().required(),
+  from: Joi.string().max(100).required(),
+  to: Joi.string().max(100).required(),
+  mode: Joi.string().max(1).required()
 })
 
 module.exports = {

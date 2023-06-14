@@ -9,7 +9,9 @@ const travelLogSchema = new Schema({
   },
   userId: { type: Schema.Types.String, ref: 'users' },
   path: { type: String, required: true },
-  at: { type: Date, default: () => { return new Date() } }
+  from: { type: Date, required: true },
+  to: { type: Date, required: true },
+  mode: { type: Number, required: true }
 })
 
 // Create model

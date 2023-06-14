@@ -49,7 +49,7 @@ class UserService {
   }
 
   async addToTravelLog (payload) {
-    const { userId, path } = payload
+    const { userId, path, from, to, mode } = payload
     // Determine path is
     const pathType = path.includes('->compete')
       ? 'compete'
@@ -76,7 +76,7 @@ class UserService {
         break
     }
 
-    return await TravelLog.create({ userId, path: newPath })
+    return await TravelLog.create({ userId, path: newPath, from, to, mode })
   }
 
   async determineCompete (competeId) {

@@ -219,7 +219,7 @@ class UserController {
 
   async travelLog (req, res) {
     const token = req.headers.authorization
-    const { path } = req.query
+    const { path, from, to, mode } = req.query
 
     try {
       // Check token is exist
@@ -233,10 +233,10 @@ class UserController {
       if (!user) throw new ClientError('Otorisasi tidak valid.', 404)
 
       // Validate payload
-      this._validator.validateTravelPath({ path })
+      this._validator.validateTravelPath({ path, from, to, mode })
 
       // Add to log
-      await this._userService.addToTravelLog({ userId: _id, path })
+      await this._userService.addToTravelLog({ userId: _id, path, from, to, mode })
 
       // Response
       const response = this._response.success(200, 'Travel log berhasil diperbarui.')
